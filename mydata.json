@@ -1,0 +1,68 @@
+{
+    "System": {
+        "System": "System: Windows",
+        "SystemNode": "Node Name: DESKTOP-HU3FCA3",
+        "SystemRelease": "Release: 10",
+        "SystemVersion": "Version: 10.0.19045",
+        "SystemMachine": "Machine: AMD64",
+        "SystemProcessor": "Processor: Intel64 Family 6 Model 151 Stepping 2, GenuineIntel",
+        "boot_time_timestamp": "2023-04-12 10:38:46",
+        "SystemBoot": "Boot Time: 2023/4/12 10:38:46"
+    },
+    "Cpu": {
+        "CpuPhisicalCore": "Physical cores: 10",
+        "CpuTotalCore": "Total cores: 16",
+        "CpuMaxFrequency": "Max Frequency: 3700.00Mhz",
+        "CpuMinFrequency": "Min Frequency: 0.00Mhz",
+        "CpuCurrentFrequency": "Current Frequency: 3700.00Mhz",
+        "CpuUsage": "Total CPU Usage: 1.7",
+        "CpuCore": [
+            "Core 0: 6.2%",
+            "Core 1: 0.0%",
+            "Core 2: 0.0%",
+            "Core 3: 0.0%",
+            "Core 4: 0.0%",
+            "Core 5: 0.0%",
+            "Core 6: 0.0%",
+            "Core 7: 0.0%",
+            "Core 8: 0.0%",
+            "Core 9: 0.0%",
+            "Core 10: 0.0%",
+            "Core 11: 0.0%",
+            "Core 12: 3.0%",
+            "Core 13: 4.6%",
+            "Core 14: 1.5%",
+            "Core 15: 7.6%"
+        ]
+    },
+    "Memory": {
+        "MemoryTotal": "Total: 31.78GB",
+        "MemoryAvailable": "Available: 19.49GB",
+        "MemoryUsed": "Used: 12.29GB",
+        "MemoryPercentage": "Percentage: 38.7%",
+        "MemorySWAPTotal": "Total: 4.75GB",
+        "MemorySWAPFree": "Free: 479.77MB",
+        "MemorySWAPUsed": "Used: 4.28GB",
+        "MemorySWAPPercentage": "Percentage: 90.1%"
+    },
+    "Network": {
+        "IoByteSent": "Total Bytes Sent: 150.24MB",
+        "IoByteRecived": "Total Bytes Received: 10.93GB",
+        "Interface: Ethernet": {
+            "NetworkInterfaceName": "Interface: Ethernet",
+            "NetworkIP": "AddressFamily.AF_INET6: fe80::9f45:c67a:8569:7808",
+            "NetworkBroadcast": "broadcast IP: None",
+            "NetworkMAC": "MAC Address: fe80::9f45:c67a:8569:7808",
+            "NetworkNetmask": "Netmask: None",
+            "NetworkBroadcastMAC": "Broadcast MAC: None"
+        },
+        "Interface: Loopback Pseudo-Interface 1": {
+            "NetworkInterfaceName": "Interface: Loopback Pseudo-Interface 1",
+            "NetworkIP": "AddressFamily.AF_INET6: ::1",
+            "NetworkBroadcast": "broadcast IP: None",
+            "NetworkMAC": "MAC Address: ::1",
+            "NetworkNetmask": "Netmask: None",
+            "NetworkBroadcastMAC": "Broadcast MAC: None"
+        }
+    }
+}
