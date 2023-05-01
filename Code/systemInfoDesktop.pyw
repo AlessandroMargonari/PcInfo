@@ -3,38 +3,45 @@ import psutil
 import platform
 import sys
 from datetime import datetime
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAction, QTabWidget,QVBoxLayout
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QGroupBox, QVBoxLayout, QGridLayout, QScrollArea
+from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, Qt, pyqtSlot
 from PyQt5.QtGui import QIcon
+from PyQt5 import QtCore
 
 class App(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.title = 'System Information - Version 2.0'
-        self.left = 0
-        self.top = 0
-        self.width = 400
-        self.height = 300
+        #title
+        self.title = 'System Information'
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
-        
+
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
+
+        #Scroll
+        scrollArea = QScrollArea(self)
+        scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scrollArea.setWidget(self.table_widget)
+        self.setCentralWidget(scrollArea)
+        self.setMinimumWidth(self.table_widget.width()+15)
+        self.setMaximumWidth(self.table_widget.width()+15)
+        self.setMaximumHeight(self.table_widget.height()+5)
+
+        #geometry
+        self.left = 0
+        self.top = 0
+        self.width = self.table_widget.width()+15
+        self.height = self.table_widget.height()+5
+        self.setGeometry(self.left, self.top, self.width, self.height)
         
         self.show()
-    
+        
 class MyTableWidget(QWidget):
     
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)
-
-        #scroll
-        self.scroll = QScrollArea()
-        self.widget = QWidget()
-        self.vbox = QVBoxLayout()
         
         # Initialize tab screen
         self.tabs = QTabWidget()
@@ -49,7 +56,7 @@ class MyTableWidget(QWidget):
         self.tabs.addTab(self.tab2,"Memory")
         self.tabs.addTab(self.tab3,"CPU")
         self.tabs.addTab(self.tab4,"Network")
-        
+          
         #first tab
         self.tab1.layout = QVBoxLayout(self)
         self.tab1.setLayout(self.tab1.layout)
@@ -115,6 +122,19 @@ class MyTableWidget(QWidget):
 
         self.tab2.layout.addWidget(MemoryDetails)
         self.tab2.layout.addWidget(MemorySWAP)
+
+        def update_memory():
+            svmem = psutil.virtual_memory()
+            swap = psutil.swap_memory()
+            labelMemoryTotal.setText(f"Total: {get_size(svmem.total)}")
+            labelMemoryAvailable.setText(f"Available: {get_size(svmem.available)}")
+            labelMemoryUsed.setText(f"Used: {get_size(svmem.used)}")
+            labelMemoryPercentage.setText(f"Percentage: {svmem.percent}%")
+            labelMemorySWAPTotal.setText(f"Total: {get_size(swap.total)}")
+            labelMemorySWAPFree.setText(f"Free: {get_size(swap.free)}")
+            labelMemorySWAPUsed.setText(f"Used: {get_size(swap.used)}")
+            labelMemorySWAPPercentage.setText(f"Percentage: {swap.percent}%")
+            QTimer.singleShot(5000, update_memory)
         
         #third tab
         self.tab3.layout = QVBoxLayout(self)
@@ -128,9 +148,9 @@ class MyTableWidget(QWidget):
         labelCPUUsage = QLabel(f"Total CPU Usage: {psutil.cpu_percent()}%")
 
         CPUUsage = QGroupBox('Core Usage')
-
         layoutCPUUsage = QVBoxLayout()
         CPUUsage.setLayout(layoutCPUUsage)
+
         self.tab3.layout.addWidget(labelPhisicalCore)
         self.tab3.layout.addWidget(labelTotalCore)
         self.tab3.layout.addWidget(labelMaxFrequency)
@@ -139,22 +159,28 @@ class MyTableWidget(QWidget):
         self.tab3.layout.addWidget(labelCPUUsage)
         self.tab3.layout.addWidget(CPUUsage)
 
+        labelCore =[]
         for i, percentage in enumerate(psutil.cpu_percent(percpu=True, interval=1)):
-            labelCore = QLabel(f"Core {i}: {percentage}%", CPUUsage)
-            layoutCPUUsage.addWidget(labelCore)
+            labelCore.append(QLabel(f"Core {i}: {percentage}%", CPUUsage))
+        for x in labelCore:
+            layoutCPUUsage.addWidget(x)
 
-        def updateCore():
-            print("test")
+        def update_cpu():
+            labelCPUUsage.setText(f"Total CPU Usage: {psutil.cpu_percent()}%")
+            labelCurrentFrequency.setText(f"Current Frequency: {cpufreq.current:.2f}Mhz")
+            
             for i, percentage in enumerate(psutil.cpu_percent(percpu=True, interval=1)):
-                # Get the corresponding QLabel object using its index in the layout
-                labelCore = layoutCPUUsage.itemAt(i).widget()
-                # Update the text of the QLabel
-                labelCore.setText(f"Core {i}: {percentage}%")
-                print
-                
-        timer = QTimer()
-        timer.timeout.connect(updateCore)
-        timer.start(5000)
+                labelCore[i]=(QLabel(f"Core {i}: {percentage}%", CPUUsage))
+
+            while layoutCPUUsage.count():
+                item = layoutCPUUsage.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.setParent(None)
+
+            for x in labelCore:
+                layoutCPUUsage.addWidget(x)
+            QTimer.singleShot(5100, update_cpu)
 
         #fourth tab
         self.tab4.layout = QVBoxLayout(self)
@@ -191,9 +217,32 @@ class MyTableWidget(QWidget):
 
         self.tab4.layout.addWidget(IOInfo)
 
+        def update_network():
+            labelByteSent.setText(f"Total Bytes Sent: {get_size(net_io.bytes_sent)}")
+            labelByteRecived.setText(f"Total Bytes Received: {get_size(net_io.bytes_recv)}")
+            QTimer.singleShot(5200, update_network)
+
+        #more
+        moreInfo = QGroupBox('')
+        more = QGridLayout()
+        moreInfo.setLayout(more)
+        author = QLabel("By Alessandro Margonari")
+        version = QLabel("Version: 2.1")
+        version.setAlignment(QtCore.Qt.AlignCenter)
+        author.setAlignment(QtCore.Qt.AlignCenter)
+        more.addWidget(author, 0,0)
+        more.addWidget(version, 0,1)
+
         # Add tabs to widget
         self.layout.addWidget(self.tabs)
+        self.layout.addWidget(moreInfo)
         self.setLayout(self.layout)
+
+        #update data
+        update_memory()
+        update_cpu()
+        update_network()
+
         
     @pyqtSlot()
     def on_click(self):

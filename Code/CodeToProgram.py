@@ -4,9 +4,11 @@ import PyInstaller.__main__
 PyInstaller.__main__.run([
     #file path
     'E:\Desktop\Projects\PCInfo\Code\systemInfoDesktop.pyw',
-    '--name=System Info',
+    '--name=SystemInfo',
+    '--icon=E:\Desktop\Projects\PCInfo\Other\icon.ico',
     '--noconfirm',
     '--onefile',
     '--console',
-    '--windowed'
+    '--windowed',
+    '--clean'
 ])
